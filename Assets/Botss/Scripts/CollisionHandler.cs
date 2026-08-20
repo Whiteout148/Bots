@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseCollisionHandler : MonoBehaviour
+public class CollisionHandler : MonoBehaviour
 {
     public event Action<Coel> GettedCoel;
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent(out Coel coel))
         {

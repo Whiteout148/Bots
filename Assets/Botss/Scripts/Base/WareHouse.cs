@@ -9,5 +9,6 @@ public class WareHouse : MonoBehaviour
     public void AddCoel(Coel coel)
     {
         _coels.Add(coel);
+        Debug.Log(_coels.Count);
     }
 }

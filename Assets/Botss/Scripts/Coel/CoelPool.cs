@@ -18,6 +18,7 @@ public class CoelPool : Pool<Coel>
     {
         base.Release(itemToRelease);
         itemToRelease.gameObject.SetActive(false);
+        itemToRelease.transform.parent = null;
     }
 
     protected override Coel Create()

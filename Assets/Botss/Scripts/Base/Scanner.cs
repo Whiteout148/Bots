@@ -1,22 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    private const float RadiusDivider = 0.5f;
+    private const float RadiusFactor = 0.5f;
 
     [SerializeField] private float _speed;
+    [SerializeField] private float _delay;
     [SerializeField] private Transform _sphere;
     [SerializeField] private Vector3 _maxScale;
 
     private Coroutine _scanningCoroutine;
+    private bool _isScanning = false;
 
-    public event Action<Coel> CoelFounded;
+    public event Action<List<Coel>> CoelsFounded;
 
     private void Start()
     {
+        _isScanning = true;
         StartScan();
     }
 
@@ -28,31 +32,58 @@ public class Scanner : MonoBehaviour
         }
     }
 
+    public void OffScan()
+    {
+        if (_scanningCoroutine != null)
+        {
+            _isScanning = false;
+            StopCoroutine(_scanningCoroutine);
+            _scanningCoroutine = null;
+        }
+    }
+
     private IEnumerator Scan()
     {
-        Vector3 normalScale = _sphere.localScale;
+        WaitForSeconds delay = new WaitForSeconds(_delay);
 
-        while (_sphere.localScale.x < _maxScale.x)
-        {
-            _sphere.localScale += Vector3.one * _speed * Time.deltaTime;
+        while (_isScanning)
+        {           
+            Vector3 normalScale = _sphere.localScale;
 
-            float radius = _sphere.localScale.x * 0.5f;
+            while (_sphere.localScale.x < _maxScale.x)
+            {
+                _sphere.localScale += Vector3.one * _speed * Time.fixedDeltaTime;
+
+                yield return new WaitForFixedUpdate();
+            }
+
+            float radius = _sphere.lossyScale.x * RadiusFactor;
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+
+            HashSet<Coel> coels = new HashSet<Coel>();
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                Debug.Log(colliders[i].gameObject.name);
-
                 if (colliders[i].TryGetComponent(out Coel coel))
                 {
-                    CoelFounded?.Invoke(coel);
+                    if (!coel.IsTaked)
+                    {
+                        coels.Add(coel);
+                    }
                 }
             }
 
-            yield return null;
+            if (coels.Count > 0)
+            {
+                Debug.Log("Scan result " + coels.Count);
+                CoelsFounded?.Invoke(coels.ToList());
+            }
+
+            _sphere.localScale = normalScale;
+
+            yield return delay;
         }
 
-        _sphere.localScale = normalScale;
         _scanningCoroutine = null;
     }
 }
