@@ -47,7 +47,7 @@ public class Scanner : MonoBehaviour
         WaitForSeconds delay = new WaitForSeconds(_delay);
 
         while (_isScanning)
-        {           
+        {
             Vector3 normalScale = _sphere.localScale;
 
             while (_sphere.localScale.x < _maxScale.x)
@@ -66,10 +66,7 @@ public class Scanner : MonoBehaviour
             {
                 if (colliders[i].TryGetComponent(out Coel coel))
                 {
-                    if (!coel.IsTaked)
-                    {
-                        coels.Add(coel);
-                    }
+                    coels.Add(coel);
                 }
             }
 

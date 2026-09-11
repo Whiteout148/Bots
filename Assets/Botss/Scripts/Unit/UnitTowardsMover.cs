@@ -9,8 +9,6 @@ public class UnitTowardsMover : MonoBehaviour
 
     public void MoveTo(Vector3 position)
     {
-        _agent.isStopped = true;
-        _agent.isStopped = false;
         _agent.SetDestination(position);
     }
 

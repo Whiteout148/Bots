@@ -6,27 +6,10 @@ public class CameraMover : MonoBehaviour
 {
     [SerializeField] private Vector2 _maxPosition;
     [SerializeField] private Vector2 _minPosition;
-    [SerializeField] private InputReader _reader;
     [SerializeField] private float _speed;
     [SerializeField] private float _sprintSpeed;
 
     private float _resultSpeed;
-
-    private void OnEnable()
-    {
-        _reader.MovingX += MoveX;
-        _reader.MovingZ += MoveZ;
-        _reader.PressSprint += OnPressSprint;
-        _reader.StopPressSprint += OnStopPressSprint;
-    }
-
-    private void OnDisable()
-    {
-        _reader.MovingX -= MoveX;
-        _reader.MovingZ -= MoveZ;
-        _reader.PressSprint -= OnPressSprint;
-        _reader.StopPressSprint -= OnStopPressSprint;
-    }
 
     private void Awake()
     {

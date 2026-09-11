@@ -11,14 +11,17 @@ public class Taker : MonoBehaviour
 
     public void Take(Transform item)
     {
-        if (item.gameObject.TryGetComponent(out Rigidbody rigidbody))
+        if (_currentItem == null)
         {
-            rigidbody.isKinematic = true;
-        }
+            if (item.gameObject.TryGetComponent(out Rigidbody rigidbody))
+            {
+                rigidbody.isKinematic = true;
+            }
 
-        item.parent = _hand;
-        item.localPosition = Vector3.zero;
-        _currentItem = item;
+            item.parent = _hand;
+            item.localPosition = Vector3.zero;
+            _currentItem = item;
+        }
     }
 
     public Transform Drop()

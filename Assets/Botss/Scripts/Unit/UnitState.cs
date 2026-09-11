@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum UnitState 
 {
-    Free, Delivering
+    Free, Delivering, Building
 }
