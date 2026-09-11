@@ -99,8 +99,7 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
 
     private void OnReadyToBuild(Vector3 newPosition, Unit unit)
     {
-        _units.Remove(unit);
-        UnitsChanged?.Invoke(_units.Count);
+        _builderUnit = null;
     }
 
     private void OnScanEnd(List<Coel> coels)
@@ -178,8 +177,13 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
             yield return new WaitUntil(() => _freeUnits.Count > 0);
         }
 
+        _coels.Clear();
+        CoelsChanged.Invoke(_coels.Count);
         _builderUnit = _freeUnits.First();
         _freeUnits.Remove(_builderUnit);
+        FreeUnitsChanged.Invoke(_freeUnits.Count);
+        _units.Remove(_builderUnit);
+        UnitsChanged.Invoke(_units.Count);
         GoingBuild?.Invoke(_builderUnit);
         _builderUnit.GoToBuild(_banner);
         _builderUnit.ReadyToBuild += OnReadyToBuild;

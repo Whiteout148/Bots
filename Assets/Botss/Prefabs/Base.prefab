@@ -254,7 +254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a62785a1c2b793f458c37f18df27f5cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderer: {fileID: 5858958644079844704}
 --- !u!1 &5202578505406555421
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,7 +883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _base: {fileID: 3802480601641139494}
-  _shower: {fileID: 5402900636822953954}
+  _lineShower: {fileID: 5402900636822953954}
   _freeUnitsShower: {fileID: 4593277452216423782}
   _unitsShower: {fileID: 8092916204996513904}
   _coelsShower: {fileID: 8369975063356423601}
@@ -906,8 +905,8 @@ MonoBehaviour:
   _place: {fileID: 6270712304298295097}
   _spawnPoint: {fileID: 6115257878022932534}
   _state: 0
-  _coelsToAddUnit: 1
-  _coelsToColonize: 1
+  _coelsToAddUnit: 3
+  _coelsToColonize: 5
   _banner: {fileID: 8728755788410558254}
   _units: []
   _freeUnits: []
