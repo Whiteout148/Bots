@@ -8,11 +8,8 @@ public class Coel : MonoBehaviour, IPooleableObject<Coel>
 {
     public event Action<Coel> NeedToRelease;
 
-    private void OnTriggerEnter(Collider other)
+    public void SetToRelease()
     {
-        if (other.gameObject.TryGetComponent<PooleableTrigger>(out _))
-        {
-            NeedToRelease?.Invoke(this);
-        }
+        NeedToRelease?.Invoke(this);
     }
 }

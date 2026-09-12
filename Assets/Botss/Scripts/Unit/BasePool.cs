@@ -16,6 +16,7 @@ public class BasePool : MonoBehaviour
 
     private void OnReadyToBuild(Vector3 position, Unit unit)
     {
+        unit.ReadyToBuild -= OnReadyToBuild;
         Base newBase = Instantiate(_basePrefab, position, _basePrefab.transform.rotation);
         BaseBuild?.Invoke(newBase, unit);
     }

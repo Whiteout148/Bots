@@ -12,12 +12,13 @@ public class Unit : MonoBehaviour
     [SerializeField] private Transform _basePlace;
     [SerializeField] private Taker _taker;
 
+    private bool _haveCargo = false;
+    private Banner _currentBanner;
+
     public event Action<Unit, Coel> ComeToBase;
     public event Action<Vector3, Unit> ReadyToBuild;
 
     public UnitState State { get; private set; }
-    private bool _haveCargo = false;
-    private Banner _currentBanner;
 
     private void OnEnable()
     {

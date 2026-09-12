@@ -770,7 +770,7 @@ MonoBehaviour:
   _speed: 50
   _delay: 5
   _sphere: {fileID: 2756758844578211599}
-  _maxScale: {x: 100, y: 100, z: 100}
+  _maxScale: {x: 40, y: 40, z: 40}
 --- !u!114 &5839195210429639614
 MonoBehaviour:
   m_ObjectHideFlags: 0

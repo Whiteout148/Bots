@@ -19,11 +19,14 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
     [SerializeField] private Banner _banner;
 
     private bool _bannerSetted;
-    [SerializeField] private List<Unit> _units = new List<Unit>();
-    [SerializeField] private List<Unit> _freeUnits = new List<Unit>();
+    private List<Unit> _units = new List<Unit>();
+    private List<Unit> _freeUnits = new List<Unit>();
     private Coroutine _waitingToFirstFreeUnit;
     private Unit _builderUnit;
 
+    public event Action<Coel> NeedRemoveOnNoteds;
+    public event Action<List<Coel>, Base> CoelsGettedInScan;
+    public event Action<List<Coel>> CoelsNoted;
     public event Func<Unit> NeedUnit;
     public event Action<Banner> BannerSended;
     public event Action<Unit> GoingBuild;
@@ -38,6 +41,7 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         _scanner.CoelsFounded += OnScanEnd;
         _deliver.UnitComing += AddFreeUnit;
         _deliver.CoelGetted += OnCoelGet;
+        _deliver.CoelsNoted += OnNoteCoels;
     }
 
     private void OnDisable()
@@ -45,6 +49,7 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         _scanner.CoelsFounded -= OnScanEnd;
         _deliver.UnitComing -= AddFreeUnit;
         _deliver.CoelGetted -= OnCoelGet;
+        _deliver.CoelsNoted -= OnNoteCoels;
     }
 
     public void Init()
@@ -97,12 +102,7 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         }
     }
 
-    private void OnReadyToBuild(Vector3 newPosition, Unit unit)
-    {
-        _builderUnit = null;
-    }
-
-    private void OnScanEnd(List<Coel> coels)
+    public void OnTargetCoelsGet(List<Coel> coels)
     {
         if (_units.Count > 0)
         {
@@ -119,8 +119,25 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         }
     }
 
+    private void OnNoteCoels(List<Coel> coels)
+    {
+        CoelsNoted?.Invoke(coels);
+    }
+
+    private void OnReadyToBuild(Vector3 newPosition, Unit unit)
+    {
+        _builderUnit = null;
+    }
+
+    private void OnScanEnd(List<Coel> coels)
+    {
+        CoelsGettedInScan?.Invoke(coels, this);
+    }
+
     private void OnCoelGet(Coel coel)
     {
+        coel.SetToRelease();
+        NeedRemoveOnNoteds?.Invoke(coel);
         _coels.Add(coel);
 
         switch (_state)

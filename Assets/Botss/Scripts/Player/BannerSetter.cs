@@ -16,7 +16,7 @@ public class BannerSetter : MonoBehaviour
     private bool _settalbe;
 
     public event Action Setted;
-    public Func<Vector3> ToGetPosition;
+    public event Func<Vector3> ToGetPosition;
 
     public void OnBannerGet(Banner banner)
     {
@@ -32,6 +32,32 @@ public class BannerSetter : MonoBehaviour
             _previewBanner.gameObject.SetActive(true);
 
             _settingCoroutine = StartCoroutine(SetPosition());
+        }
+    }
+
+    public void CancelSet()
+    {
+        if (_isSetting && _settingCoroutine != null)
+        {
+            _isSetting = false;
+            StopCoroutine(_settingCoroutine);
+            _settingCoroutine = null;
+            _previewBanner.gameObject.SetActive(false);
+        }
+    }
+
+    public void Set()
+    {
+        if (_isSetting && _settingCoroutine != null && _settalbe)
+        {
+            _isSetting = false;
+            StopCoroutine(_settingCoroutine);
+            _settingCoroutine = null;
+            _currentBanner.gameObject.SetActive(true);
+            _currentBanner.transform.parent = null;
+            _currentBanner.transform.position = _previewBanner.transform.position;
+            Setted?.Invoke();
+            _previewBanner.gameObject.SetActive(false);
         }
     }
 
@@ -70,32 +96,6 @@ public class BannerSetter : MonoBehaviour
             }
 
             yield return null;
-        }
-    }
-
-    public void CancelSet()
-    {
-        if (_isSetting && _settingCoroutine != null)
-        {
-            _isSetting = false;
-            StopCoroutine(_settingCoroutine);
-            _settingCoroutine = null;
-            _previewBanner.gameObject.SetActive(false);
-        }
-    }
-
-    public void Set()
-    {
-        if (_isSetting && _settingCoroutine != null && _settalbe)
-        {
-            _isSetting = false;
-            StopCoroutine(_settingCoroutine);
-            _settingCoroutine = null;
-            _currentBanner.gameObject.SetActive(true);
-            _currentBanner.transform.parent = null;
-            _currentBanner.transform.position = _previewBanner.transform.position;
-            Setted?.Invoke();
-            _previewBanner.gameObject.SetActive(false);
         }
     }
 }
