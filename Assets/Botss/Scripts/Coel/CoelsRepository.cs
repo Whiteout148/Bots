@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class CoelsRepository : MonoBehaviour
 {
-    [SerializeField] private HashSet<Coel> _notedCoels = new HashSet<Coel>();
+    private HashSet<Coel> _notedCoels = new HashSet<Coel>();
 
-    public void OnGetCoelsInScan(List<Coel> coels, Base bass)
+    public List<Coel> GetTargetCoels(List<Coel> coels)
     {
         List<Coel> targetCoelsToSet = new List<Coel>();
 
@@ -20,16 +20,15 @@ public class CoelsRepository : MonoBehaviour
             }
         }
 
-        bass.OnTargetCoelsGet(targetCoelsToSet);
+        _notedCoels.AddRange(targetCoelsToSet);
+        return targetCoelsToSet;
     }
 
-    public void OnNeedToNote(List<Coel> coels)
+    public void RemoveOnNoteds(Coel coel)
     {
-        _notedCoels.AddRange(coels);
-    }
-
-    public void OnNeedRemoveOnNotes(Coel coel)
-    {
-        _notedCoels.Remove(coel);
+        if (_notedCoels.Contains(coel))
+        {
+            _notedCoels.Remove(coel);
+        }
     }
 }

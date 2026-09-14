@@ -15,26 +15,13 @@ public class Deliver : MonoBehaviour
 
     public event Action<Unit> UnitComing;
     public event Action<Coel> CoelGetted;
-    public event Action<List<Coel>> CoelsNoted;
 
     public bool UnitsEnough { get; private set; } = true;
     public bool IsNeedGetOnCome { get; private set; } = false;
 
     public void StartDelivering(List<Coel> coels, List<Unit> units)
     {
-        HashSet<Coel> coelsToAdd = new HashSet<Coel>();
-
-        for (int i = 0; i < coels.Count; i++)
-        {
-            if (!_targetCoels.Contains(coels[i]))
-            {
-                coelsToAdd.Add(coels[i]);
-            }
-        }
-
-        _coelsLeft.AddRange(coelsToAdd);
-        CoelsNoted?.Invoke(coelsToAdd.ToList());
-        Debug.Log(_coelsLeft.Count);
+        _coelsLeft.AddRange(coels);
 
         if (units.Count <= 0)
             return;

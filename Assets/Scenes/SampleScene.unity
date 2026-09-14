@@ -461,7 +461,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c99f4bef3f96c248a28d9b738808982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _notedCoels: []
 --- !u!1 &254936458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,10 +1553,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxPosition: {x: 250, y: 250}
   _minPosition: {x: 30, y: 30}
-  _delay: 3
+  _delay: 0.5
   _hitOverlapRadius: 10
   _pool: {fileID: 1921168180}
-  _maxCoelsCount: 10
+  _maxCoelsCount: 30
   _positionYFactor: 3
 --- !u!4 &1921168179
 Transform:

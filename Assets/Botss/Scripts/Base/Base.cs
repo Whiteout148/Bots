@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,13 +24,11 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
     private List<Unit> _freeUnits = new List<Unit>();
     private Coroutine _waitingToFirstFreeUnit;
     private Unit _builderUnit;
+    private CoelsRepository _repository;
 
-    public event Action<Coel> NeedRemoveOnNoteds;
-    public event Action<List<Coel>, Base> CoelsGettedInScan;
-    public event Action<List<Coel>> CoelsNoted;
     public event Func<Unit> NeedUnit;
-    public event Action<Banner> BannerSended;
     public event Action<Unit> GoingBuild;
+    public event Action<Banner> BannerSended;
     public event Action Selected;
     public event Action Deselected;
     public event Action<int> FreeUnitsChanged;
@@ -41,7 +40,6 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         _scanner.CoelsFounded += OnScanEnd;
         _deliver.UnitComing += AddFreeUnit;
         _deliver.CoelGetted += OnCoelGet;
-        _deliver.CoelsNoted += OnNoteCoels;
     }
 
     private void OnDisable()
@@ -49,13 +47,13 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         _scanner.CoelsFounded -= OnScanEnd;
         _deliver.UnitComing -= AddFreeUnit;
         _deliver.CoelGetted -= OnCoelGet;
-        _deliver.CoelsNoted -= OnNoteCoels;
     }
 
-    public void Init()
+    public void Init(CoelsRepository repository)
     {
         _state = BaseState.Extension;
         _freeUnits.AddRange(_units);
+        _repository = repository;
         FreeUnitsChanged?.Invoke(_freeUnits.Count);
         UnitsChanged?.Invoke(_units.Count);
         CoelsChanged?.Invoke(_coels.Count);
@@ -102,11 +100,18 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
         }
     }
 
-    public void OnTargetCoelsGet(List<Coel> coels)
+    private void OnReadyToBuild(Vector3 newPosition, Unit unit)
     {
+        _builderUnit = null;
+    }
+
+    private void OnScanEnd(List<Coel> coels)
+    {
+        List<Coel> targetCoels = _repository.GetTargetCoels(coels);
+
         if (_units.Count > 0)
         {
-            List<Unit> unitsToSend = _freeUnits.Where(unit => unit.State == UnitState.Free).Take(coels.Count).ToList();
+            List<Unit> unitsToSend = _freeUnits.Where(unit => unit.State == UnitState.Free).Take(targetCoels.Count).ToList();
 
             for (int i = 0; i < unitsToSend.Count; i++)
             {
@@ -115,29 +120,14 @@ public class Base : MonoBehaviour, ICantCoelSpawnable, ISelectable
 
             FreeUnitsChanged?.Invoke(_freeUnits.Count);
 
-            _deliver.StartDelivering(coels, unitsToSend);
+            _deliver.StartDelivering(targetCoels, unitsToSend);
         }
-    }
-
-    private void OnNoteCoels(List<Coel> coels)
-    {
-        CoelsNoted?.Invoke(coels);
-    }
-
-    private void OnReadyToBuild(Vector3 newPosition, Unit unit)
-    {
-        _builderUnit = null;
-    }
-
-    private void OnScanEnd(List<Coel> coels)
-    {
-        CoelsGettedInScan?.Invoke(coels, this);
     }
 
     private void OnCoelGet(Coel coel)
     {
         coel.SetToRelease();
-        NeedRemoveOnNoteds?.Invoke(coel);
+        _repository.RemoveOnNoteds(coel);
         _coels.Add(coel);
 
         switch (_state)

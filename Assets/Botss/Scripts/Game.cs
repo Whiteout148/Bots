@@ -16,9 +16,6 @@ public class Game : MonoBehaviour
     {
         _bases.First().NeedUnit += _unitPool.Get;
         _bases.First().GoingBuild += _basePool.OnGoToBuild;
-        _bases.First().CoelsGettedInScan += _repository.OnGetCoelsInScan;
-        _bases.First().NeedRemoveOnNoteds += _repository.OnNeedRemoveOnNotes;
-        _bases.First().CoelsNoted += _repository.OnNeedToNote;
         _basePool.BaseBuild += OnBaseBuilded;
     }
 
@@ -28,9 +25,6 @@ public class Game : MonoBehaviour
         {
             _bases.First().NeedUnit -= _unitPool.Get;
             _bases.First().GoingBuild -= _basePool.OnGoToBuild;
-            _bases.First().CoelsGettedInScan -= _repository.OnGetCoelsInScan;
-            _bases.First().NeedRemoveOnNoteds -= _repository.OnNeedRemoveOnNotes;
-            _bases.First().CoelsNoted -= _repository.OnNeedToNote;
         }
 
         _basePool.BaseBuild -= OnBaseBuilded;
@@ -39,18 +33,15 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         _bases.First().AddUnit(_unitPool.Get());
-        _bases.First().Init();
+        _bases.First().Init(_repository);
     }
 
     private void OnBaseBuilded(Base bass, Unit unit)
     { 
         bass.AddUnit(unit);
-        bass.CoelsGettedInScan += _repository.OnGetCoelsInScan;
-        bass.NeedRemoveOnNoteds += _repository.OnNeedRemoveOnNotes;
-        bass.CoelsNoted += _repository.OnNeedToNote;
         bass.NeedUnit += _unitPool.Get;
         bass.GoingBuild += _basePool.OnGoToBuild;
-        bass.Init();
+        bass.Init(_repository);
         _bases.Add(bass);
     }
 }
